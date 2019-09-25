@@ -1,20 +1,17 @@
 /**
  *
  */
-const debug = require('debug')('mocha');
+const debug = require('debug')('boxmls-firebase-admin-test'),
+      colors = require('colors'),
+      firebase = require('../index.js');
 
 module.exports = {
 
-  'before': function( done ) {
-    done();
-  },
-
   'firebaseAdmin': {
 
-    'init with path and read the data': function ( done ) {
-      this.timeout( 10000 );
+    'init, read the data and exit': function ( done ) {
+      this.timeout( 15000 );
 
-      const firebase = require('../index.js');
       const fs = require('fs');
       const path = require('path');
 
@@ -22,7 +19,7 @@ module.exports = {
       let defaultPath = `${path.dirname(__filename).split(path.sep).slice(0,-1).join(path.sep)}/gce-key.json`;
       let gceCert = process.env.FIREBASE_ADMIN_CERT || defaultPath;
 
-      debug("FireBase Certificate [%s]", gceCert);
+      debug("FireBase Certificate is [%s]", colors.green(gceCert));
 
       if(!process.env.FIREBASE_ADMIN_DB) {
         return done(new Error("FIREBASE_ADMIN_DB env must be defined"));
@@ -35,19 +32,22 @@ module.exports = {
       const firebaseAdmin = firebase.firebaseAdmin(gceCert);
 
       firebaseAdmin.ready(()=>{
-        let data = firebaseAdmin.get();
+        let data = firebase.getData();
         //debug(require('util').inspect(data, {showHidden: false, depth: 10, colors: true}));
         data.should.be.an.instanceOf(Object);
-        firebaseAdmin.exit();
-        done();
+        firebaseAdmin.exit((err)=>{
+          debug("FireBase cache file removed");
+          done(err);
+        });
       });
 
+    },
+
+    'removes cache on exit': function () {
+      let data = firebase.getData(null,'not exist');
+      data.should.be.equal('not exist');
     }
 
-  },
-
-  'after': function( done ) {
-    done();
-  },
+  }
 
 };

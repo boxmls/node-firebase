@@ -1,17 +1,20 @@
 'use strict';
 
-const debug = require('debug')('firebaseAdmin'),
+const debug = require('debug')('boxmls-firebase-admin'),
       admin = require('firebase-admin'),
-      _ = require('lodash');
+      colors = require('colors'),
+      fs = require('fs');
 
 module.exports = class firebaseAdmin {
 
   /**
    * Constructor
    *
-   * @param apiKey
+   * @param cert
+   * @param db
+   * @param ref
    */
-  constructor(cert = process.env.FIREBASE_ADMIN_CERT, db = process.env.FIREBASE_ADMIN_DB, ref = process.env.FIREBASE_ADMIN_REF) {
+  constructor(cert,db,ref) {
     let self = this;
 
     if(!cert || !db || !ref) {
@@ -39,9 +42,22 @@ module.exports = class firebaseAdmin {
     this.db = admin.database();
     this.ref = this.db.ref(ref);
 
+    this.isReady = false;
+
+    this.fileCachePath = require('./utils.js').getFileCachePath(db,ref);
+
     this.ref.on("value", function(snapshot) {
       debug("Data changed");
-      self._data = snapshot.val();
+      try {
+        fs.writeFile(self.fileCachePath, JSON.stringify(snapshot.val()), (err)=>{
+          if(err){
+            throw err;
+          }
+          self.isReady = true;
+        });
+      } catch(e){
+        console.error(e);
+      }
     });
 
   }
@@ -49,10 +65,18 @@ module.exports = class firebaseAdmin {
   /**
    * Removes connection
    */
-  exit() {
+  exit(cb) {
+    // Close connection
     this.ref.off();
     this.db.goOffline();
+    // Exit firebase-admin
     this.admin.delete();
+    // Remove file with data
+    if(cb) {
+      fs.unlink(this.fileCachePath, cb);
+    } else {
+      fs.unlinkSync(this.fileCachePath);
+    }
   }
 
   /**
@@ -61,24 +85,15 @@ module.exports = class firebaseAdmin {
    * @param cb
    */
   ready(cb) {
-    if(!this._data) {
+    const timeout = 500;
+    if(!this.isReady) {
+      debug("Data is not ready yet. Waiting %s ms until next attempt", colors.bold(timeout));
       setTimeout(()=>{
         this.ready(cb);
-      },100);
+      },timeout);
       return;
     }
     cb();
-  }
-
-  /**
-   * Just a wrapper
-   * Retrieves data
-   *
-   * @param map
-   * @returns {*}
-   */
-  get(map) {
-    return !map ? this._data : _.get( this._data, map )
   }
 
 }
