@@ -43,15 +43,27 @@ module.exports = class firebaseAdmin {
     this.ref = this.db.ref(ref);
 
     this.isReady = false;
+    this.isExited = false;
 
     this.fileCachePath = require('./utils.js').getFileCachePath(db,ref);
+
+    // Exit handlers
+    process.on('exit', self.exit.bind(self));
+    //catches ctrl+c event
+    process.on('SIGINT', self.exit.bind(self));
+    // catches "kill pid" (for example: nodemon restart)
+    process.on('SIGUSR1', self.exit.bind(self));
+    process.on('SIGUSR2', self.exit.bind(self));
+    //catches uncaught exceptions
+    process.on('uncaughtException', self.exit.bind(self));
 
     this.ref.on("value", function(snapshot) {
       debug("Data changed");
       try {
         fs.writeFile(self.fileCachePath, JSON.stringify(snapshot.val()), (err)=>{
-          if(err){
-            throw err;
+          if(err || !(snapshot.val())){
+            self.exit();
+            throw ( err || (new Error("Data is not defined")) );
           }
           self.isReady = true;
         });
@@ -66,16 +78,23 @@ module.exports = class firebaseAdmin {
    * Removes connection
    */
   exit(cb) {
-    // Close connection
-    this.ref.off();
-    this.db.goOffline();
-    // Exit firebase-admin
-    this.admin.delete();
-    // Remove file with data
-    if(cb) {
-      fs.unlink(this.fileCachePath, cb);
-    } else {
-      fs.unlinkSync(this.fileCachePath);
+    try {
+      this.isExited = true;
+      // Close connection
+      //this.ref.off();
+      //this.db.goOffline();
+      // Exit firebase-admin
+      this.admin.delete();
+      // Remove file with data
+      if(fs.existsSync(this.fileCachePath)) {
+        if(typeof cb == 'function') {
+          fs.unlink(this.fileCachePath, cb);
+        } else {
+          fs.unlinkSync(this.fileCachePath);
+        }
+      }
+    } catch(e) {
+      //console.error(e);
     }
   }
 
@@ -86,7 +105,7 @@ module.exports = class firebaseAdmin {
    */
   ready(cb) {
     const timeout = 500;
-    if(!this.isReady) {
+    if(!this.isReady && !this.isExited) {
       debug("Data is not ready yet. Waiting %s ms until next attempt", colors.bold(timeout));
       setTimeout(()=>{
         this.ready(cb);

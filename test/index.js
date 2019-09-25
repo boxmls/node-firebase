@@ -35,6 +35,8 @@ module.exports = {
         let data = firebase.getData();
         //debug(require('util').inspect(data, {showHidden: false, depth: 10, colors: true}));
         data.should.be.an.instanceOf(Object);
+        data.should.have.property('test');
+        data.test.should.equal('Hello World!');
         firebaseAdmin.exit((err)=>{
           debug("FireBase cache file removed");
           done(err);
