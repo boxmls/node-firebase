@@ -19,7 +19,7 @@ module.exports = {
       let defaultPath = `${path.dirname(__filename).split(path.sep).slice(0,-1).join(path.sep)}/gce-key.json`;
       let gceCert = process.env.FIREBASE_ADMIN_CERT || defaultPath;
 
-      debug("FireBase Certificate is [%s]", colors.green(gceCert));
+      //debug("FireBase Certificate is [%s]", colors.green(gceCert));
 
       if(!process.env.FIREBASE_ADMIN_DB) {
         return done(new Error("FIREBASE_ADMIN_DB env must be defined"));

@@ -1,5 +1,7 @@
 ![image](https://user-images.githubusercontent.com/308489/57512890-9acacc00-7315-11e9-854f-ad77da4d2742.png)
 
+[![CircleCI](https://circleci.com/gh/boxmls/node-firebase-admin/tree/master.svg?style=svg)](https://circleci.com/gh/boxmls/node-firebase-admin/tree/master)
+
 # BoxMLS Firebase Admin Node.js SDK
 
 `boxmls-firebase-admin` module is the wrapper for [firebase-admin](https://www.npmjs.com/package/firebase-admin) module.
