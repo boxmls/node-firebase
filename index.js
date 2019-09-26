@@ -5,7 +5,7 @@ const _ = require('lodash'),
 
 Object.defineProperties( module.exports, {
 
-  firebaseAdmin: {
+  init: {
     /**
      * Returns new Firebase Admin API object
      * Wrapper for firebase-admin npm module with additional features
@@ -13,7 +13,7 @@ Object.defineProperties( module.exports, {
      * @param args
      * @returns object
      */
-    value: function firebaseAdmin(cert = process.env.FIREBASE_ADMIN_CERT, db = process.env.FIREBASE_ADMIN_DB, ref = process.env.FIREBASE_ADMIN_REF) {
+    value: function init(cert = process.env.FIREBASE_ADMIN_CERT, db = process.env.FIREBASE_ADMIN_DB, ref = process.env.FIREBASE_ADMIN_REF) {
       return new (require('./src/firebase-admin.js'))(cert,db,ref);
     },
     enumerable: true,

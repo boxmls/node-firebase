@@ -25,11 +25,9 @@
 General initialization (e.g.: on server start)
 
 ```js
-const bfba = require('boxmls-firebase-admin');
-
 // If the following environments provided, you can ignore initialization parameters:
 // FIREBASE_ADMIN_CERT, FIREBASE_ADMIN_DB, FIREBASE_ADMIN_REF
-const firebaseAdmin = bfba.firebaseAdmin();
+const firbaseAdmin = require('boxmls-firebase-admin').init();
 
 // On successful initialization and pulling the data
 firebaseAdmin.ready(()=>{
