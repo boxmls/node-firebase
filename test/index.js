@@ -29,7 +29,7 @@ module.exports = {
         return done(new Error("FIREBASE_ADMIN_REF env must be defined"));
       }
 
-      const firebaseAdmin = firebase.firebaseAdmin(gceCert);
+      const firebaseAdmin = firebase.init(gceCert);
 
       firebaseAdmin.ready(()=>{
         let data = firebase.getData();
