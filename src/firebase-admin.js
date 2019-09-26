@@ -14,8 +14,10 @@ module.exports = class firebaseAdmin {
    * @param db
    * @param ref
    */
-  constructor(cert,db,ref) {
+  constructor(cert,db,ref,clean = false) {
     let self = this;
+
+    this.clean = clean ? clean : false;
 
     if(!cert || !db || !ref) {
       throw new Error("Firebase Admin API can not be initialized due to invalid parameters");
@@ -77,7 +79,7 @@ module.exports = class firebaseAdmin {
   /**
    * Removes connection
    */
-  exit(cb) {
+  exit() {
     try {
       this.isExited = true;
       // Close connection
@@ -86,12 +88,8 @@ module.exports = class firebaseAdmin {
       // Exit firebase-admin
       this.admin.delete();
       // Remove file with data
-      if(fs.existsSync(this.fileCachePath)) {
-        if(typeof cb == 'function') {
-          fs.unlink(this.fileCachePath, cb);
-        } else {
-          fs.unlinkSync(this.fileCachePath);
-        }
+      if(this.clean && fs.existsSync(this.fileCachePath)) {
+        fs.unlinkSync(this.fileCachePath);
       }
     } catch(e) {
       //console.error(e);
