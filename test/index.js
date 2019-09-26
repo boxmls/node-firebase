@@ -37,7 +37,7 @@ module.exports = {
         data.should.be.an.instanceOf(Object);
         data.should.have.property('test');
         data.test.should.equal('Hello World!');
-        firebaseAdmin.exit((err)=>{
+        firebaseAdmin.exit(true,(err)=>{
           debug("FireBase cache file removed");
           done(err);
         });
