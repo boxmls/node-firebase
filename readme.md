@@ -17,6 +17,7 @@
 * `FIREBASE_ADMIN_CERT`. Optional. Path to GCE Certificate file or Certificate itself (JSON) 
 * `FIREBASE_ADMIN_DB`. Optional. Database name which is used to generate Database URL using the pattern `https://{DATABASENAME}.firebaseio.com`.
 * `FIREBASE_ADMIN_REF`. Optional. Database Resource Referal.
+* `FIREBASE_CACHE_DIR`. Optional. The directory where cache file with firebase data will be stored.
 
 ## Usage
 
