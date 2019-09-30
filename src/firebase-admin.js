@@ -58,8 +58,8 @@ module.exports = class firebaseAdmin {
     process.on('uncaughtException', self.exit.bind(self));
 
     this.ref.on("value", function(snapshot) {
-      debug("Data changed");
       try {
+        debug("Data changed. Saving data to %s file", colors.green(self.fileCachePath));
         fs.writeFile(self.fileCachePath, JSON.stringify(snapshot.val()), (err)=>{
           if(err || !(snapshot.val())){
             self.exit();

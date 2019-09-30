@@ -1,6 +1,6 @@
 {
   "name": "boxmls-firebase-admin",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Firebase Admin Client for BoxMLS",
   "main": "index.js",
   "scripts": {
