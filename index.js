@@ -22,7 +22,12 @@ Object.defineProperties( module.exports, {
 
   getData: {
     /**
-     * Returns the data from cache file
+     * Returns the data from cache file.
+     *
+     * If process env is set - it will be returned instead. KEY to ENV pattern examples:
+     * - 'custom.firebase_admin.env' key equals CUSTOM_FIREBASE_ADMIN_ENV
+     * - 'custom_firebase_admin_env' key equals CUSTOM_FIREBASE_ADMIN_ENV
+     * - 'hello.world' key equals HELLO_WORLD
      *
      * @param key
      * @param def Default value if data does not exist
@@ -33,6 +38,12 @@ Object.defineProperties( module.exports, {
     value: function getData(key = null, def = null, db = process.env.FIREBASE_ADMIN_DB, ref = process.env.FIREBASE_ADMIN_REF) {
       let data;
       let path = require('./src/utils.js').getFileCachePath(db,ref);
+      const env = key.replace(/\./g,'_').toUpperCase();
+
+      if(typeof process.env[env] == 'string') {
+        return process.env[env];
+      }
+
       if(fs.existsSync(path)) {
         data = require(path);
       }

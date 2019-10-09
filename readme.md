@@ -11,6 +11,7 @@
  * Prevent starting initialization in multiple places.
  * Easily pull data from [Firebase Realtime Database](https://firebase.google.com/docs/database/)
  * Access FRD data across the application synchronously.
+ * Ability to redeclare data by `process.env`.
 
 ## Environments
 
@@ -20,6 +21,15 @@
 * `FIREBASE_CACHE_DIR`. Optional. The directory where cache file with firebase data will be stored.
 
 ## Usage
+
+* Firebase Admin [Realtime Database](https://console.firebase.google.com/) can be used to store options similar to environments. 
+* On starting a service,the module should be initialized. So, any option may be retrieved in service later.
+* 
+
+Option may be redeclared by `process.env` using KEY to ENV pattern. Examples:
+* `custom.firebase_admin.env` key equals `CUSTOM_FIREBASE_ADMIN_ENV`
+* `custom_firebase_admin_env` key equals `CUSTOM_FIREBASE_ADMIN_ENV`
+* `hello.world` key equals `HELLO_WORLD`
 
 ### Examples
 
@@ -46,6 +56,7 @@ let data = require('boxmls-firebase-admin').getData();
 Retrieve the specific value of data by key:
 
 ```
+// Note: if process.env.SOME_PATH_TO_FILE defined, the value will be returned from the env instead of Firebase
 let data = require('boxmls-firebase-admin').getData('some.path.to.value');
 ```
 

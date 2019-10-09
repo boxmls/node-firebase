@@ -9,6 +9,11 @@ module.exports = {
 
   'firebaseAdmin': {
 
+    'read the data from process env': function() {
+      let data = firebase.getData('custom.firebase_admin.env','not exist');
+      data.should.be.equal('Hello World!');
+    },
+
     'init, read the data and exit': function ( done ) {
       this.timeout( 15000 );
 

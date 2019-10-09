@@ -1,10 +1,10 @@
 {
   "name": "boxmls-firebase-admin",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Firebase Admin Client for BoxMLS",
   "main": "index.js",
   "scripts": {
-    "test": "DEBUG=boxmls-firebase-admin-test,boxmls-firebase-admin mocha"
+    "test": "DEBUG=boxmls-firebase-admin-test,boxmls-firebase-admin CUSTOM_FIREBASE_ADMIN_ENV='Hello World!' mocha"
   },
   "repository": {
     "type": "git",
