@@ -38,10 +38,12 @@ Object.defineProperties( module.exports, {
     value: function getData(key = null, def = null, db = process.env.FIREBASE_ADMIN_DB, ref = process.env.FIREBASE_ADMIN_REF) {
       let data;
       let path = require('./src/utils.js').getFileCachePath(db,ref);
-      const env = key.replace(/\./g,'_').toUpperCase();
 
-      if(typeof process.env[env] == 'string') {
-        return process.env[env];
+      if(typeof key == 'string' && key) {
+        const env = key.replace(/\./g,'_').toUpperCase();
+        if(typeof process.env[env] == 'string') {
+          return process.env[env];
+        }
       }
 
       if(fs.existsSync(path)) {
