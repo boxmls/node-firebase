@@ -49,14 +49,15 @@ firebaseAdmin.ready(()=>{
 
 Retrieve the data in any place of code:
  
-```
+```js
 let data = require('boxmls-firebase-admin').getData();
 ```
 
 Retrieve the specific value of data by key:
 
-```
-// Note: if process.env.SOME_PATH_TO_FILE defined, the value will be returned from the env instead of Firebase
+```js
+// Note: if process.env.SOME_PATH_TO_FILE defined, 
+// the value will be returned from the env instead of Firebase
 let data = require('boxmls-firebase-admin').getData('some.path.to.value');
 ```
 
