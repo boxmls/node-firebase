@@ -48,14 +48,12 @@ module.exports = class firebaseAdmin {
     this.fileCachePath = require('./utils.js').getFileCachePath(db,ref);
 
     // Exit handlers
-    process.on('exit', self.exit.bind(self));
+    process.on('exit', ()=>self.exit());
     //catches ctrl+c event
-    process.on('SIGINT', self.exit.bind(self));
+    process.on('SIGINT', ()=>self.exit());
     // catches "kill pid" (for example: nodemon restart)
-    process.on('SIGUSR1', self.exit.bind(self));
-    process.on('SIGUSR2', self.exit.bind(self));
-    //catches uncaught exceptions
-    process.on('uncaughtException', self.exit.bind(self));
+    process.on('SIGUSR1', ()=>self.exit());
+    process.on('SIGUSR2', ()=>self.exit());
 
     this.ref.on("value", function(snapshot) {
       try {
@@ -77,7 +75,10 @@ module.exports = class firebaseAdmin {
   /**
    * Removes connection
    */
-  exit(clean=false,cb=null) {
+  exit(cb=null) {
+    // Boolean. Remove or not cache file on exit.
+    const clean = ( process.env.FIREBASE_ADMIN_CACHE_CLEAN && ['true','1'].indexOf(process.env.FIREBASE_ADMIN_CACHE_CLEAN) > - 1 )
+      ? true : false;
     try {
       this.isExited = true;
       // Close connection

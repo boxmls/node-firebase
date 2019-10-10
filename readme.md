@@ -13,12 +13,21 @@
  * Access FRD data across the application synchronously.
  * Ability to redeclare data by `process.env`.
 
+## Installation
+
+To add the module to BoxMLS service ( to install module and add it to `package.json`):
+ 
+```
+npm install --save https://github.com/boxmls/node-firebase-admin.git#0.1.6
+```
+
 ## Environments
 
 * `FIREBASE_ADMIN_CERT`. Optional. Path to GCE Certificate file or Certificate itself (JSON) 
 * `FIREBASE_ADMIN_DB`. Optional. Database name which is used to generate Database URL using the pattern `https://{DATABASENAME}.firebaseio.com`.
 * `FIREBASE_ADMIN_REF`. Optional. Database Resource Referal.
 * `FIREBASE_CACHE_DIR`. Optional. The directory where cache file with firebase data will be stored.
+* `FIREBASE_ADMIN_CACHE_CLEAN`. Optional. Remove cache file on process exit or not. Default `false`, - not remove.
 
 ## Usage
 
