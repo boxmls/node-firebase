@@ -5,7 +5,9 @@ const debug = require('debug')('boxmls-firebase-admin'),
       colors = require('colors'),
       fs = require('fs');
 
-module.exports = class firebaseAdmin {
+const firebaseAdmin = require('./firebaseAdmin.js');
+
+module.exports = class firebaseAdminDatabase extends firebaseAdmin {
 
   /**
    * Constructor
@@ -15,31 +17,14 @@ module.exports = class firebaseAdmin {
    * @param ref
    */
   constructor(cert,db,ref) {
-    let self = this;
+    super(cert,db);
 
-    if(!cert || !db || !ref) {
-      throw new Error("Firebase Admin API can not be initialized due to invalid parameters");
+    if(!ref) {
+      throw new Error("Firebase Admin API can not be initialized due to missing refferal");
     }
-
-    // Certificate may be JSON itself instead of path to file. So we try to parse it.
-    let certJSON;
-    try {
-      if(typeof cert == "string") {
-        certJSON = JSON.parse(cert)
-      }
-    } catch(e) {}
-
-    if(certJSON) {
-      cert=certJSON;
-    }
-
-    this.admin = admin.initializeApp({
-      credential: admin.credential.cert(cert),
-      databaseURL: `https://${db}.firebaseio.com`
-    });
 
     // Get a database reference to our posts
-    this.db = admin.database();
+    this.db = this.app.database();
     this.ref = this.db.ref(ref);
 
     this.isReady = false;
@@ -48,22 +33,22 @@ module.exports = class firebaseAdmin {
     this.fileCachePath = require('./utils.js').getFileCachePath(db,ref);
 
     // Exit handlers
-    process.on('exit', ()=>self.exit());
+    process.on('exit', ()=>this.exit());
     //catches ctrl+c event
-    process.on('SIGINT', ()=>self.exit());
+    process.on('SIGINT', ()=>this.exit());
     // catches "kill pid" (for example: nodemon restart)
-    process.on('SIGUSR1', ()=>self.exit());
-    process.on('SIGUSR2', ()=>self.exit());
+    process.on('SIGUSR1', ()=>this.exit());
+    process.on('SIGUSR2', ()=>this.exit());
 
-    this.ref.on("value", function(snapshot) {
+    this.ref.on("value", (snapshot)=>{
       try {
-        debug("Data changed. Saving data to %s file", colors.green(self.fileCachePath));
-        fs.writeFile(self.fileCachePath, JSON.stringify(snapshot.val()), (err)=>{
+        debug("Data changed. Saving data to %s file", colors.green(this.fileCachePath));
+        fs.writeFile(this.fileCachePath, JSON.stringify(snapshot.val()), (err)=>{
           if(err || !(snapshot.val())){
-            self.exit();
+            this.exit();
             throw ( err || (new Error("Data is not defined")) );
           }
-          self.isReady = true;
+          this.isReady = true;
         });
       } catch(e){
         console.error(e);
@@ -85,7 +70,7 @@ module.exports = class firebaseAdmin {
       //this.ref.off();
       //this.db.goOffline();
       // Exit firebase-admin
-      this.admin.delete();
+      this.app.delete();
       // Remove file with data
       if(typeof cb == 'function') {
         if(clean && fs.existsSync(this.fileCachePath)) {

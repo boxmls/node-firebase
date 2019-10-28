@@ -9,9 +9,10 @@
  It's designed to:
  * Minimize nested code of application initialization.
  * Prevent starting initialization in multiple places.
- * Easily pull data from [Firebase Realtime Database](https://firebase.google.com/docs/database/)
+ * Easily add/update/delete/list documents in Firestore collections.
+ * Easily pull data from [Firebase Realtime Database](https://firebase.google.com/docs/database/) (FRD)
  * Access FRD data across the application synchronously.
- * Ability to redeclare data by `process.env`.
+ * Ability to redeclare FRD data by `process.env`.
 
 ## Installation
 
@@ -31,28 +32,30 @@ npm install --save https://github.com/boxmls/node-firebase-admin.git#0.1.6
 
 ## Usage
 
+### Realtime Database
+
 * Firebase Admin [Realtime Database](https://console.firebase.google.com/) can be used to store options similar to environments. 
 * On starting a service,the module should be initialized. So, any option may be retrieved in service later.
-* 
 
 Option may be redeclared by `process.env` using KEY to ENV pattern. Examples:
 * `custom.firebase_admin.env` key equals `CUSTOM_FIREBASE_ADMIN_ENV`
 * `custom_firebase_admin_env` key equals `CUSTOM_FIREBASE_ADMIN_ENV`
 * `hello.world` key equals `HELLO_WORLD`
 
-### Examples
+#### Examples
 
 General initialization (e.g.: on server start)
 
 ```js
+const firebaseAdmin = require('boxmls-firebase-admin');
 // If the following environments provided, you can ignore initialization parameters:
 // FIREBASE_ADMIN_CERT, FIREBASE_ADMIN_DB, FIREBASE_ADMIN_REF
-const firbaseAdmin = require('boxmls-firebase-admin').init();
+const firebaseAdminDatabase = firebaseAdmin.init('database');
 
 // On successful initialization and pulling the data
-firebaseAdmin.ready(()=>{
+firebaseAdminDatabase.ready(()=>{
 	// Retrieve the data
-	let data = firebase.getData();
+	let data = firebaseAdmin.getData();
 });
 ```
 
@@ -68,6 +71,31 @@ Retrieve the specific value of data by key:
 // Note: if process.env.SOME_PATH_TO_FILE defined, 
 // the value will be returned from the env instead of Firebase
 let data = require('boxmls-firebase-admin').getData('some.path.to.value');
+```
+
+### Cloud Firestore
+
+* Simplified SDK for managing documents in collections
+
+#### Examples
+
+```js
+const firbaseAdminFirestore = require('boxmls-firebase-admin').init('firestore');
+
+// Add/update document
+firbaseAdminFirestore.setDocument('collectionName', 'documentID', {
+	name: 'Firestore Mocha Test',
+	createdAt: Date.now()
+}, callback );
+
+// Retrieve document
+firbaseAdminFirestore.getDocument('collectionName', 'documentID', callback);
+
+// Delete document
+firbaseAdminFirestore.deleteDocument('collectionName', 'documentID', callback);
+
+// Retrieve list of documents in collection
+firbaseAdminFirestore.listDocuments('collectionName', callback);
 ```
 
 ## Tests

@@ -1,7 +1,7 @@
 {
   "name": "boxmls-firebase-admin",
-  "version": "0.1.6",
-  "description": "Firebase Admin Client for BoxMLS",
+  "version": "0.2.0",
+  "description": "Firebase Admin Node.js SDK",
   "main": "index.js",
   "scripts": {
     "test": "DEBUG=boxmls-firebase-admin-test,boxmls-firebase-admin FIREBASE_ADMIN_CACHE_CLEAN=true CUSTOM_FIREBASE_ADMIN_ENV='Hello World!' mocha"

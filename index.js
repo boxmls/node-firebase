@@ -13,8 +13,22 @@ Object.defineProperties( module.exports, {
      * @param args
      * @returns object
      */
-    value: function init(cert = process.env.FIREBASE_ADMIN_CERT, db = process.env.FIREBASE_ADMIN_DB, ref = process.env.FIREBASE_ADMIN_REF) {
-      return new (require('./src/firebase-admin.js'))(cert,db,ref);
+    value: function init(type = 'database', cert = process.env.FIREBASE_ADMIN_CERT, db = process.env.FIREBASE_ADMIN_DB, ref = process.env.FIREBASE_ADMIN_REF) {
+      let instance;
+      try {
+        switch (type) {
+          case 'firestore':
+            instance = new (require(`./src/firebaseAdminFirestore.js`))(cert,db);
+            break;
+          case 'database':
+          default:
+            instance = new (require(`./src/firebaseAdminDatabase.js`))(cert,db,ref);
+        }
+      } catch(e) {
+        console.error(e);
+        return null;
+      }
+      return instance;
     },
     enumerable: true,
     writable: true
