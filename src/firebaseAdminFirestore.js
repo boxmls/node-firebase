@@ -14,6 +14,17 @@ module.exports = class firebaseAdminFirestore extends firebaseAdmin {
    */
   constructor(cert,db) {
     super(cert,db);
+
+    // Use suffix in collection names to split Production and Staging collections.
+    let collectionSuffix = '';
+    if(process.env.FIREBASE_ADMIN_COLLECTION_SUFFIX) {
+      collectionSuffix = '-'+process.env.FIREBASE_ADMIN_COLLECTION_SUFFIX;
+    }
+    else if(process.env.GIT_BRANCH) {
+      collectionSuffix = '-'+['production','master'].indexOf(process.env.GIT_BRANCH) > -1 ? 'production' : 'staging';
+    }
+    this.collectionSuffix = collectionSuffix;
+
     this.firestore = this.app.firestore();
   }
 
@@ -36,7 +47,7 @@ module.exports = class firebaseAdminFirestore extends firebaseAdmin {
    */
   listDocuments(collection, callback) {
     let promise = this.firestore
-      .collection(collection)
+      .collection(`${collection}${this.collectionSuffix}`)
       .listDocuments()
       .then(documentRefs => {
         return this.firestore.getAll(...documentRefs);
@@ -74,7 +85,7 @@ module.exports = class firebaseAdminFirestore extends firebaseAdmin {
    */
   setDocument(collection,doc,data,callback){
     let promise = this.firestore
-      .collection(collection)
+      .collection(`${collection}${this.collectionSuffix}`)
       .doc(doc)
       .set(data);
 
@@ -99,7 +110,7 @@ module.exports = class firebaseAdminFirestore extends firebaseAdmin {
    */
   getDocument(collection,doc,callback){
     let promise = this.firestore
-      .collection(collection)
+      .collection(`${collection}${this.collectionSuffix}`)
       .doc(doc)
       .get();
 
@@ -123,7 +134,7 @@ module.exports = class firebaseAdminFirestore extends firebaseAdmin {
    */
   deleteDocument(collection,doc,callback){
     let promise = this.firestore
-      .collection(collection)
+      .collection(`${collection}${this.collectionSuffix}`)
       .doc(doc)
       .delete();
 
