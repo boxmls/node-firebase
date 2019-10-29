@@ -61,16 +61,12 @@ module.exports = class firebaseAdminDatabase extends firebaseAdmin {
    * Removes connection
    */
   exit(cb=null) {
+    super.exit();
     // Boolean. Remove or not cache file on exit.
     const clean = ( process.env.FIREBASE_ADMIN_CACHE_CLEAN && ['true','1'].indexOf(process.env.FIREBASE_ADMIN_CACHE_CLEAN) > - 1 )
       ? true : false;
     try {
       this.isExited = true;
-      // Close connection
-      //this.ref.off();
-      //this.db.goOffline();
-      // Exit firebase-admin
-      this.app.delete();
       // Remove file with data
       if(typeof cb == 'function') {
         if(clean && fs.existsSync(this.fileCachePath)) {

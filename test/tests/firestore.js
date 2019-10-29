@@ -61,6 +61,11 @@ module.exports = {
     this.timeout( 15000 );
 
     module.exports.firestore.deleteDocument(collection,doc,done)
+  },
+
+  'init firestore app one more time': function() {
+    const firestore = firebase.init('firestore',gceCert);
+    (firestore === null).should.not.be.true();
   }
 
 };

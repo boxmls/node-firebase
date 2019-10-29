@@ -1,6 +1,11 @@
 'use strict';
 
-const admin = require('firebase-admin');
+const admin = require('firebase-admin'),
+      md5 = require('md5'),
+      debug = require('debug')('boxmls-firebase-admin'),
+      colors = require('colors');
+
+global.nodeFirebaseAdminApps = {};
 
 module.exports = class firebaseAdmin {
 
@@ -28,11 +33,39 @@ module.exports = class firebaseAdmin {
       cert=certJSON;
     }
 
-    this.app = admin.initializeApp({
+    let params = {
       credential: admin.credential.cert(cert),
       databaseURL: `https://${db}.firebaseio.com`
-    });
+    };
 
+    this.appName = md5(JSON.stringify(params));
+
+    if(global.nodeFirebaseAdminApps[this.appName]) {
+      debug("Firebase application already initialized with name [%s] and stored in global env %s. Using it.", colors.green(this.appName), colors.bold('nodeFirebaseAdminApps'));
+      this.app = global.nodeFirebaseAdminApps[this.appName];
+    } else {
+      debug("Initializing Firebase application. Unique name [%s]", colors.green(this.appName));
+      this.app = global.nodeFirebaseAdminApps[this.appName] = admin.initializeApp(params, this.appName);
+    }
+
+  }
+
+  /**
+   * Remove initialized application
+   * and delete its object from global env nodeFirebaseAdminApps
+   *
+   */
+  exit() {
+    try {
+      this.app.delete().then(()=>{
+        if(global.nodeFirebaseAdminApps[this.appName]) {
+          debug("Removing the initialized application [%s] from global env %s", colors.green(this.appName), colors.bold('nodeFirebaseAdminApps'));
+          delete global.nodeFirebaseAdminApps[this.appName];
+        }
+      });
+    } catch(e) {
+      // Ignore for now.
+    }
   }
 
 }

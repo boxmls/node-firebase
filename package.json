@@ -1,6 +1,6 @@
 {
   "name": "boxmls-firebase-admin",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Firebase Admin Node.js SDK",
   "main": "index.js",
   "scripts": {
