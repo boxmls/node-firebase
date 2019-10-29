@@ -18,10 +18,10 @@ module.exports = class firebaseAdminFirestore extends firebaseAdmin {
     // Use suffix in collection names to split Production and Staging collections.
     let collectionSuffix = '';
     if(process.env.FIREBASE_ADMIN_COLLECTION_SUFFIX) {
-      collectionSuffix = '-'+process.env.FIREBASE_ADMIN_COLLECTION_SUFFIX;
+      collectionSuffix = `-${process.env.FIREBASE_ADMIN_COLLECTION_SUFFIX}`;
     }
     else if(process.env.GIT_BRANCH) {
-      collectionSuffix = '-'+['production','master'].indexOf(process.env.GIT_BRANCH) > -1 ? 'production' : 'staging';
+      collectionSuffix = `-${['production','master'].indexOf(process.env.GIT_BRANCH) > -1 ? 'production' : 'staging'}`;
     }
     this.collectionSuffix = collectionSuffix;
 
