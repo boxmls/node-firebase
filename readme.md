@@ -29,6 +29,7 @@ npm install --save https://github.com/boxmls/node-firebase-admin.git#0.2.1
 * `FIREBASE_ADMIN_REF`. Optional. Database Resource Referal.
 * `FIREBASE_CACHE_DIR`. Optional. The directory where cache file with firebase data will be stored.
 * `FIREBASE_ADMIN_CACHE_CLEAN`. Optional. Remove cache file on process exit or not. Default `false`, - not remove.
+* `FIREBASE_ADMIN_COLLECTION_SUFFIX`. Optional. It defines suffix for collection names. So it may be used to split environment scopes. If it's not defined, suffix will be got from `GIT_BRANCH` env if it exists.
 
 ## Usage
 
