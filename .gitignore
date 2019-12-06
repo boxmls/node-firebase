@@ -1,5 +1,4 @@
 .idea
-node_modules
 gce-key.json
 fba-*.json
 */fba-*.json

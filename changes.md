@@ -1,6 +1,6 @@
-## 0.2.3
+## 0.2.4
 
-* Use specific `@firebase/database` version because of the bug in `0.5.14` version
+* Added `node_modules` to the repo.
 
 ## 0.2.2
 
