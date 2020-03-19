@@ -21,7 +21,7 @@ module.exports = class firebaseAdminFirestore extends firebaseAdmin {
       collectionSuffix = `-${process.env.FIREBASE_ADMIN_COLLECTION_SUFFIX}`;
     }
     else if(process.env.GIT_BRANCH) {
-      collectionSuffix = `-${['production','master'].indexOf(process.env.GIT_BRANCH) > -1 ? 'production' : 'staging'}`;
+      collectionSuffix = `-${(/^production/g).test(process.env.GIT_BRANCH) || (/^master/g).test(process.env.GIT_BRANCH) ? 'production' : 'staging'}`;
     }
     this.collectionSuffix = collectionSuffix;
 

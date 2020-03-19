@@ -1,3 +1,7 @@
+## 0.2.5
+
+* Improvements for detecting collection suffix for Firestore.
+
 ## 0.2.4
 
 * Added `node_modules` to the repo.
