@@ -1,3 +1,7 @@
+## 0.2.6
+
+* Re-generated `node_modules` in terms of updating `minimist` nm package.
+
 ## 0.2.5
 
 * Improvements for detecting collection suffix for Firestore.
