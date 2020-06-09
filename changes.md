@@ -1,3 +1,7 @@
+## 0.2.7
+
+* Upgraded `websocket-extensions` to `0.1.4`.
+
 ## 0.2.6
 
 * Re-generated `node_modules` in terms of updating `minimist` nm package.
