@@ -1,3 +1,8 @@
+## 0.2.8
+
+* Upgraded `lodash` to `4.17.19`.
+* Upgraded `node-fetch` to `2.6.1`.
+
 ## 0.2.7
 
 * Upgraded `websocket-extensions` to `0.1.4`.
